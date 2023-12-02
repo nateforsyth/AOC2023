@@ -1,4 +1,4 @@
-﻿using Utilities.Helpers;
+﻿using Utilities.LogicLayer;
 using Utilities.Enums;
 
 namespace DayOne
@@ -31,11 +31,11 @@ namespace DayOne
         }
 
         /// <summary>
-        /// Process Calibration Document input for DayOne, Part One.
+        /// Process Calibration Document input for Day One, Part One.
         /// </summary>
         static void PartOne(List<string> fileContent)
         {
-            int totalCalibrationValue = NumberHelpers.CalculateTotalCalibrationValue(fileContent);
+            int totalCalibrationValue = NumberMethods.CalculateTotalCalibrationValue(fileContent);
 
             if (totalCalibrationValue > 0)
             {
@@ -44,11 +44,11 @@ namespace DayOne
         }
 
         /// <summary>
-        /// Process Calibration Document input for DayOne, Part Two.
+        /// Process Calibration Document input for Day One, Part Two.
         /// </summary>
         static void PartTwo(List<string> fileContent)
         {
-            int totalCalibrationValue = StringHelpers.ExtractNumbersAndCalculateTotalCalibrationValue(fileContent);
+            int totalCalibrationValue = StringMethods.ExtractNumbersAndCalculateTotalCalibrationValue(fileContent);
 
             if (totalCalibrationValue > 0)
             {

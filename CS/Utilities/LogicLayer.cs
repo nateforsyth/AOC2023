@@ -1,10 +1,89 @@
 ﻿using System.Text.RegularExpressions;
-using System.Text;
 using Utilities.Enums;
 
-namespace Utilities.Helpers
+namespace Utilities.LogicLayer
 {
-    public class StringHelpers
+    public class CollectionMethods
+    {
+        /// <summary>
+        /// Day Two, Part One - Extract string input to validate game results
+        /// </summary>
+        /// <param name="gameInput"></param>
+        /// <param name="redCubeMax"></param>
+        /// <param name="greenCubeMax"></param>
+        /// <param name="blueCubeMax"></param>
+        /// <param name="partTwo"></param>
+        /// <returns></returns>
+        public static (int idCount, int totalPower) CalculateGameResults(List<string> gameInput, int redCubeMax, int greenCubeMax, int blueCubeMax)
+        {
+            List<DayTwoGame> dayTwoGames = [];
+            int idCount = 0;
+            int power = 0;
+
+            gameInput.ForEach(x =>
+            {
+                string[] baseGameEls = x.Split(": ");
+                string[] gameIdEls = baseGameEls[0].Split(" ");
+                string[] gameCubeSets = baseGameEls[1].Split("; ");
+
+                List<DayTwoGame.Set> sets = new List<DayTwoGame.Set>();
+
+                foreach (var subset in gameCubeSets)
+                {
+                    DayTwoGame.Set set = new DayTwoGame.Set();
+                    string[] cubeSubsets = subset.Split(", ");
+
+                    foreach (var cubeAndCount in cubeSubsets)
+                    {
+                        string[] cubeEls = cubeAndCount.Split(" ");
+                        bool countParsed = int.TryParse(cubeEls[0], out int cubeCount);
+
+                        if (countParsed && cubeCount > 0)
+                        {
+                            switch (cubeEls[1])
+                            {
+                                case "red":
+                                    set.RedCubeCount = cubeCount;
+                                    break;
+                                case "green":
+                                    set.GreenCubeCount = cubeCount;
+                                    break;
+                                case "blue":
+                                    set.BlueCubeCount = cubeCount;
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                    }
+
+                    sets.Add(set);
+                }
+
+                bool idParsed = int.TryParse(gameIdEls[1], out int gameId);
+
+                if (idParsed && gameId > 0)
+                {
+                    DayTwoGame game = new(gameId, sets, redCubeMax, greenCubeMax, blueCubeMax);
+                    dayTwoGames.Add(game);
+                }
+            });
+
+            dayTwoGames.ForEach(game =>
+            {
+                if (game.GameIsPossible(redCubeMax, greenCubeMax, blueCubeMax))
+                {
+                    idCount += game.ID;
+                }
+
+                power += game.TotalSetPower;
+            });
+
+            return (idCount, power);
+        }
+    }
+
+    public class StringMethods
     {
         /// <summary>
         /// Day One, Part Two - Extract number values from Input strings using a Regular Expression and calculate total calibration value
@@ -45,14 +124,14 @@ namespace Utilities.Helpers
                     }
                 });
 
-                totalCalibrationValue += NumberHelpers.CalculateCalibrationLine(inputInts);
+                totalCalibrationValue += NumberMethods.CalculateCalibrationLine(inputInts);
             });
 
             return totalCalibrationValue;
         }
     }
 
-    public class NumberHelpers
+    public class NumberMethods
     {
         /// <summary>
         /// Day One, Part One - Extract and calculate total calibration values from a List of strings
