@@ -21,8 +21,8 @@ jobs:
       with:
         dotnet-version: 8.0.x
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore ./CS/CS.sln
     - name: Build
-      run: dotnet build --no-restore
+      run: dotnet build ./CS/DayOne/DayOne.csproj --configuration Release --no-restore
     - name: Test
-      run: dotnet test --no-build --verbosity normal
+      run: dotnet test ./CS/CS.sln --configuration Release --no-restore
