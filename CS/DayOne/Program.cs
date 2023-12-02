@@ -1,4 +1,5 @@
 ﻿using Utilities.Helpers;
+using Utilities.Enums;
 
 namespace DayOne
 {
@@ -6,6 +7,8 @@ namespace DayOne
     {
         static void Main(string[] args)
         {
+            DateTime start = DateTime.Now;
+
             List<string>? fileContent = null;
             try
             {
@@ -18,15 +21,39 @@ namespace DayOne
 
             if (fileContent != null)
             {
-                var totalCalibrationValue = NumberHelpers.CalculateTotalCalibrationValue(fileContent);
-
-                if (totalCalibrationValue > 0)
-                {
-                    Console.WriteLine($"totalCalibrationValue: {totalCalibrationValue}");
-                }
+                PartOne(fileContent);
+                PartTwo(fileContent);
             }
 
+            DateTime end = DateTime.Now;
+            Console.WriteLine($"Elapsed time: {(end - start).TotalMilliseconds}ms");
             Console.Read();
+        }
+
+        /// <summary>
+        /// Process Calibration Document input for DayOne, Part One.
+        /// </summary>
+        static void PartOne(List<string> fileContent)
+        {
+            int totalCalibrationValue = NumberHelpers.CalculateTotalCalibrationValue(fileContent);
+
+            if (totalCalibrationValue > 0)
+            {
+                Console.WriteLine($"Day One, Part One; totalCalibrationValue: {totalCalibrationValue}");
+            }
+        }
+
+        /// <summary>
+        /// Process Calibration Document input for DayOne, Part Two.
+        /// </summary>
+        static void PartTwo(List<string> fileContent)
+        {
+            int totalCalibrationValue = StringHelpers.ExtractNumbersAndCalculateTotalCalibrationValue(fileContent);
+
+            if (totalCalibrationValue > 0)
+            {
+                Console.WriteLine($"Day One, Part Two; totalCalibrationValue: {totalCalibrationValue}");
+            }
         }
     }
 }
