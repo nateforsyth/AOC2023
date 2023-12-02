@@ -1,4 +1,4 @@
-using Utilities.Helpers;
+using Utilities.LogicLayer;
 using Utilities.Enums;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -8,7 +8,7 @@ namespace Tests
     public class DayOneTests
     {
         [TestClass]
-        public class DayOneTests_PartOne
+        public class PartOne
         {
             [TestMethod]
             public void File_WithValidPath_IsNotNull()
@@ -37,7 +37,7 @@ namespace Tests
                 List<string> fileContent = FileHelpers.GetFileContentFromRelativePath("\\Shared\\Input\\DayOne\\TestInput_1.txt");
 
                 // Act
-                int totalCalibrationValue = NumberHelpers.CalculateTotalCalibrationValue(fileContent);
+                int totalCalibrationValue = NumberMethods.CalculateTotalCalibrationValue(fileContent);
 
                 // Assert
                 Assert.AreEqual(142, totalCalibrationValue);
@@ -45,7 +45,7 @@ namespace Tests
         }
 
         [TestClass]
-        public class DayTwoTests_PartTwo
+        public class PartTwo
         {
             [TestMethod]
             public void File_WithValidPath_IsNotNull()
@@ -74,7 +74,7 @@ namespace Tests
                 List<string> fileContent = FileHelpers.GetFileContentFromRelativePath("\\Shared\\Input\\DayOne\\TestInput_2.txt");
 
                 // Act
-                int totalCalibrationValue = StringHelpers.ExtractNumbersAndCalculateTotalCalibrationValue(fileContent);
+                int totalCalibrationValue = StringMethods.ExtractNumbersAndCalculateTotalCalibrationValue(fileContent);
 
                 // Assert
                 Assert.AreEqual(281, totalCalibrationValue);
