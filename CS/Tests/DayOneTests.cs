@@ -14,7 +14,7 @@ namespace Tests
             public void File_WithValidPath_IsNotNull()
             {
                 // Arrange
-                List<string> fileContent = FileHelpers.GetFileContentFromRelativePath("\\Shared\\Input\\DayOne\\TestInput.txt");
+                List<string> fileContent = FileHelpers.GetFileContentFromRelativePath("\\Shared\\Input\\DayOne\\TestInput_1.txt");
 
                 // Assert
                 Assert.IsNotNull(fileContent);
@@ -24,7 +24,7 @@ namespace Tests
             public void File_WithValidPath_GetsContent()
             {
                 // Arrange
-                List<string> fileContent = FileHelpers.GetFileContentFromRelativePath("\\Shared\\Input\\DayOne\\TestInput.txt");
+                List<string> fileContent = FileHelpers.GetFileContentFromRelativePath("\\Shared\\Input\\DayOne\\TestInput_1.txt");
 
                 // Assert
                 Assert.IsTrue(fileContent.Count > 0);
@@ -34,7 +34,7 @@ namespace Tests
             public void File_WithValidPath_ValidatesTotalCalibrationValue()
             {
                 // Arrange
-                List<string> fileContent = FileHelpers.GetFileContentFromRelativePath("\\Shared\\Input\\DayOne\\TestInput.txt");
+                List<string> fileContent = FileHelpers.GetFileContentFromRelativePath("\\Shared\\Input\\DayOne\\TestInput_1.txt");
 
                 // Act
                 int totalCalibrationValue = NumberHelpers.CalculateTotalCalibrationValue(fileContent);
