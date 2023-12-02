@@ -17,7 +17,12 @@ namespace Tests
             public void File_WithValidPath_IsNotNull()
             {
                 // Arrange
-                List<string> fileContent = FileHelpers.GetFileContentFromRelativePath("\\Shared\\Input\\DayTwo\\TestInput_1.txt");
+                List<string>? fileContent = null;
+#if DEBUG
+                fileContent = FileHelpers.GetFileContentFromRelativePath("\\Shared\\Input\\DayTwo\\TestInput_1.txt");
+#else
+                fileContent = FileHelpers.GetFileContentFromRelativePath("/Shared/Input/DayTwo/TestInput_1.txt");
+#endif
 
                 // Assert
                 Assert.IsNotNull(fileContent);
@@ -27,7 +32,12 @@ namespace Tests
             public void File_WithValidPath_GetsContent()
             {
                 // Arrange
-                List<string> fileContent = FileHelpers.GetFileContentFromRelativePath("\\Shared\\Input\\DayTwo\\TestInput_1.txt");
+                List<string>? fileContent = null;
+#if DEBUG
+                fileContent = FileHelpers.GetFileContentFromRelativePath("\\Shared\\Input\\DayTwo\\TestInput_1.txt");
+#else
+                fileContent = FileHelpers.GetFileContentFromRelativePath("/Shared/Input/DayTwo/TestInput_1.txt");
+#endif
 
                 // Assert
                 Assert.IsTrue(fileContent.Count > 0);
@@ -87,7 +97,12 @@ namespace Tests
             public void File_WithValidPath_AggregatesIdsOfPossibleGames()
             {
                 // Arrange
-                List<string> fileContent = FileHelpers.GetFileContentFromRelativePath("\\Shared\\Input\\DayTwo\\TestInput_1.txt");
+                List<string>? fileContent = null;
+#if DEBUG
+                fileContent = FileHelpers.GetFileContentFromRelativePath("\\Shared\\Input\\DayTwo\\TestInput_1.txt");
+#else
+                fileContent = FileHelpers.GetFileContentFromRelativePath("/Shared/Input/DayTwo/TestInput_1.txt");
+#endif
                 int redCubeMax = 12, greenCubeMax = 13, blueCubeMax = 14;
 
                 // Act
@@ -106,6 +121,11 @@ namespace Tests
             {
                 // Arrange
                 List<string> fileContent = FileHelpers.GetFileContentFromRelativePath("\\Shared\\Input\\DayTwo\\TestInput_1.txt");
+#if DEBUG
+                fileContent = FileHelpers.GetFileContentFromRelativePath("\\Shared\\Input\\DayTwo\\TestInput_1.txt");
+#else
+                fileContent = FileHelpers.GetFileContentFromRelativePath("/Shared/Input/DayTwo/TestInput_1.txt");
+#endif
 
                 // Assert
                 Assert.IsNotNull(fileContent);
@@ -115,7 +135,12 @@ namespace Tests
             public void File_WithValidPath_GetsContent()
             {
                 // Arrange
-                List<string> fileContent = FileHelpers.GetFileContentFromRelativePath("\\Shared\\Input\\DayTwo\\TestInput_1.txt");
+                List<string>? fileContent = null;
+#if DEBUG
+                fileContent = FileHelpers.GetFileContentFromRelativePath("\\Shared\\Input\\DayTwo\\TestInput_1.txt");
+#else
+                fileContent = FileHelpers.GetFileContentFromRelativePath("/Shared/Input/DayTwo/TestInput_1.txt");
+#endif
 
                 // Assert
                 Assert.IsTrue(fileContent.Count > 0);
@@ -125,7 +150,12 @@ namespace Tests
             public void File_WithValidPath_AggregatesTotalPowerValuesOfAllGames()
             {
                 // Arrange
-                List<string> fileContent = FileHelpers.GetFileContentFromRelativePath("\\Shared\\Input\\DayTwo\\TestInput_1.txt");
+                List<string>? fileContent = null;
+#if DEBUG
+                fileContent = FileHelpers.GetFileContentFromRelativePath("\\Shared\\Input\\DayTwo\\TestInput_1.txt");
+#else
+                fileContent = FileHelpers.GetFileContentFromRelativePath("/Shared/Input/DayTwo/TestInput_1.txt");
+#endif
                 int redCubeMax = 12, greenCubeMax = 13, blueCubeMax = 14;
 
                 // Act

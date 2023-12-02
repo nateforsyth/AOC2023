@@ -14,7 +14,12 @@ namespace Tests
             public void File_WithValidPath_IsNotNull()
             {
                 // Arrange
-                List<string> fileContent = FileHelpers.GetFileContentFromRelativePath("\\Shared\\Input\\DayOne\\TestInput_1.txt");
+                List<string>? fileContent = null;
+#if DEBUG
+                fileContent = FileHelpers.GetFileContentFromRelativePath("\\Shared\\Input\\DayOne\\TestInput_1.txt");
+#else
+                fileContent = FileHelpers.GetFileContentFromRelativePath("/Shared/Input/DayOne/TestInput_1.txt");
+#endif
 
                 // Assert
                 Assert.IsNotNull(fileContent);
@@ -24,7 +29,12 @@ namespace Tests
             public void File_WithValidPath_GetsContent()
             {
                 // Arrange
-                List<string> fileContent = FileHelpers.GetFileContentFromRelativePath("\\Shared\\Input\\DayOne\\TestInput_1.txt");
+                List<string>? fileContent = null;
+#if DEBUG
+                fileContent = FileHelpers.GetFileContentFromRelativePath("\\Shared\\Input\\DayOne\\TestInput_1.txt");
+#else
+                fileContent = FileHelpers.GetFileContentFromRelativePath("/Shared/Input/DayOne/TestInput_1.txt");
+#endif
 
                 // Assert
                 Assert.IsTrue(fileContent.Count > 0);
@@ -34,7 +44,12 @@ namespace Tests
             public void File_WithValidPath_ValidatesTotalCalibrationValue()
             {
                 // Arrange
-                List<string> fileContent = FileHelpers.GetFileContentFromRelativePath("\\Shared\\Input\\DayOne\\TestInput_1.txt");
+                List<string>? fileContent = null;
+#if DEBUG
+                fileContent = FileHelpers.GetFileContentFromRelativePath("\\Shared\\Input\\DayOne\\TestInput_1.txt");
+#else
+                fileContent = FileHelpers.GetFileContentFromRelativePath("/Shared/Input/DayOne/TestInput_1.txt");
+#endif
 
                 // Act
                 int totalCalibrationValue = NumberMethods.CalculateTotalCalibrationValue(fileContent);
@@ -51,7 +66,12 @@ namespace Tests
             public void File_WithValidPath_IsNotNull()
             {
                 // Arrange
-                List<string> fileContent = FileHelpers.GetFileContentFromRelativePath("\\Shared\\Input\\DayOne\\TestInput_2.txt");
+                List<string>? fileContent = null;
+#if DEBUG
+                fileContent = FileHelpers.GetFileContentFromRelativePath("\\Shared\\Input\\DayOne\\TestInput_2.txt");
+#else
+                fileContent = FileHelpers.GetFileContentFromRelativePath("/Shared/Input/DayOne/TestInput_2.txt");
+#endif
 
                 // Assert
                 Assert.IsNotNull(fileContent);
@@ -61,7 +81,12 @@ namespace Tests
             public void File_WithValidPath_GetsContent()
             {
                 // Arrange
-                List<string> fileContent = FileHelpers.GetFileContentFromRelativePath("\\Shared\\Input\\DayOne\\TestInput_2.txt");
+                List<string>? fileContent = null;
+#if DEBUG
+                fileContent = FileHelpers.GetFileContentFromRelativePath("\\Shared\\Input\\DayOne\\TestInput_2.txt");
+#else
+                fileContent = FileHelpers.GetFileContentFromRelativePath("/Shared/Input/DayOne/TestInput_2.txt");
+#endif
 
                 // Assert
                 Assert.IsTrue(fileContent.Count > 0);
@@ -71,7 +96,12 @@ namespace Tests
             public void Strings_WithValidData_ExtractsValidIntegerStringsFromInputString()
             {
                 // Arrange
-                List<string> fileContent = FileHelpers.GetFileContentFromRelativePath("\\Shared\\Input\\DayOne\\TestInput_2.txt");
+                List<string>? fileContent = null;
+#if DEBUG
+                fileContent = FileHelpers.GetFileContentFromRelativePath("\\Shared\\Input\\DayOne\\TestInput_2.txt");
+#else
+                fileContent = FileHelpers.GetFileContentFromRelativePath("/Shared/Input/DayOne/TestInput_2.txt");
+#endif
 
                 // Act
                 int totalCalibrationValue = StringMethods.ExtractNumbersAndCalculateTotalCalibrationValue(fileContent);

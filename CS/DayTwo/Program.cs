@@ -11,7 +11,11 @@ namespace DayTwo
             List<string>? fileContent = null;
             try
             {
+#if DEBUG
                 fileContent = FileHelpers.GetFileContentFromRelativePath("\\Shared\\Input\\DayTwo\\Input.txt");
+#else
+                fileContent = FileHelpers.GetFileContentFromRelativePath("/Shared/Input/DayTwo/Input.txt");
+#endif
             }
             catch (Exception ex)
             {
