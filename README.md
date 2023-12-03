@@ -8,6 +8,6 @@ I'd originally planned to use C++ for this year's Advent, however things have ch
 
 | Day | Stars |
 | --- | --- |
-| [Day 3: Gear Ratios](https://github.com/nateforsyth/AOC2023/tree/main/CS/DayThree) | ⭐ |
+| [Day 3: Gear Ratios](https://github.com/nateforsyth/AOC2023/tree/main/CS/DayThree) | ⭐⭐ |
 | [Day 2: Cube Conundrum](https://github.com/nateforsyth/AOC2023/tree/main/CS/DayTwo) | ⭐⭐ |
 | [Day 1: Trebuchet?!](https://github.com/nateforsyth/AOC2023/tree/main/CS/DayOne) | ⭐⭐ |
