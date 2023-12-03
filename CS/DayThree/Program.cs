@@ -15,7 +15,7 @@ namespace DayThree
             try
             {
                 fileContent = FileHelpers.GetFileContentFromRelativePath("\\Shared\\Input\\DayThree\\Input.txt");
-                //fileContent = FileHelpers.GetFileContentFromRelativePath("\\Shared\\Input\\DayThree\\TestInput_1.txt");
+                //fileContent = FileHelpers.GetFileContentFromRelativePath("\\Shared\\Input\\DayThree\\TestInput.txt");
             }
             catch (Exception ex)
             {
@@ -54,7 +54,7 @@ namespace DayThree
             {
                 foreach (char c in line.Value)
                 {
-                    Console.Write(c);
+                    //Console.Write(c);
                     if (partPositioningSymbols.Contains(c))
                     {
                         partPositions.Add((currentX, currentY), (c, line.Value.Count));
@@ -63,7 +63,7 @@ namespace DayThree
                 }
                 currentY++;
                 currentX = 0;
-                Console.Write("\n");
+                //Console.Write("\n");
             }
 
             foreach (var partElement in partPositions)
@@ -77,6 +77,7 @@ namespace DayThree
             }
 
             int aggregatedPartNumberTotal = 0;
+            int aggregatedGearRatioTotal = 0;
 
             parts.ForEach(part =>
             {
@@ -96,9 +97,12 @@ namespace DayThree
                 });
 
                 part.SurroundingLines = partsMatrixSubset;
-                part.CalculateSurroundingPartsFromCoords(part.SurroundingLines);
+                part.CalculateSurroundingPartsFromCoords(part.SurroundingLines, part.PartElement);
                 aggregatedPartNumberTotal += part.SurroundingPartNumberAggregate;
+                aggregatedGearRatioTotal += part.GearRatio;
             });
+
+            Console.WriteLine($"Day Three\r\n\tPart One\r\n\t\tAggregate of all adjacent part numbers: {aggregatedPartNumberTotal}\r\n\tPart Two\r\n\t\tAggregate of all Gear Ratios: {aggregatedGearRatioTotal}\r\n");
 
             DateTime end = DateTime.Now;
             Console.WriteLine($"Elapsed time: {(end - start).TotalMilliseconds}ms");

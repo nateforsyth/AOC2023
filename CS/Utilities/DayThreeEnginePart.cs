@@ -17,12 +17,14 @@ namespace Utilities
         public Dictionary<int, List<char>>? SurroundingLines { get; set; }
         public List<Match>? SurroundingParts { get; private set; }
         public int SurroundingPartNumberAggregate { get; set; }
+        public int GearRatio { get; set; }
 
-        public void CalculateSurroundingPartsFromCoords(Dictionary<int, List<char>> surroundingLines)
+        public void CalculateSurroundingPartsFromCoords(Dictionary<int, List<char>> surroundingLines, char partElement)
         {
             List<Match> surroundingParts = [];
             int partNumberAggregateTotal = 0;
             string pattern = @"\b\d+\b";
+            bool partElementIsGear = partElement == '*';
 
             foreach (var coordLine in surroundingLines)
             {
@@ -59,6 +61,17 @@ namespace Utilities
 
             SurroundingParts = surroundingParts;
             SurroundingPartNumberAggregate = partNumberAggregateTotal;
+
+            if (partElementIsGear && surroundingParts.Count == 2)
+            {
+                bool firstPartParsed = int.TryParse(surroundingParts[0].Value, out int firstPartNumber);
+                bool secondPartParsed = int.TryParse(surroundingParts[1].Value, out int secondPartNumber);
+
+                if (firstPartParsed && secondPartParsed)
+                {
+                    GearRatio = firstPartNumber * secondPartNumber;
+                }
+            }
         }
 
         private static List<(int x, int y)> CalculateSurroundingCoordinates(int xPosition, int yPosition, int partNumberLineLength)
