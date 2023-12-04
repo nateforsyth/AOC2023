@@ -1,5 +1,5 @@
 ﻿using Utilities;
-using Utilities.LogicLayer;
+using Utilities.Controller;
 
 namespace Day3
 {
@@ -32,8 +32,7 @@ namespace Day3
                     {
                         if (!partPositioningSymbols.Contains(c))
                         {
-                            bool parsed = int.TryParse(c.ToString(), out int parsedInt);
-                            if (!parsed && c != '.')
+                            if (!int.TryParse(c.ToString(), out int parsedInt) && c != '.')
                             {
                                 partPositioningSymbols.Add(c);
                             }

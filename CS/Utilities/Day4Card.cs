@@ -7,6 +7,8 @@
         public List<int> PlayerNumbers { get; set; } = new List<int>();
         public List<int> WinningNumbers { get; set; } = new List<int>();
         public int Score { get; set; }
+        public int WinCount { get; set; }
+        public bool IsCopy { get; set; }
 
         public Day4Card(string cardString)
         {
@@ -14,8 +16,9 @@
             List<string> cardIdEls = [.. cardEls[0].Split(" ", StringSplitOptions.RemoveEmptyEntries)];
             List<string> cardValueEls = [.. cardEls[1].Split("|", StringSplitOptions.RemoveEmptyEntries)];
 
-            bool idParsed = int.TryParse(cardIdEls[1], out int id);
-            if (idParsed)
+            IsCopy = false;
+
+            if (int.TryParse(cardIdEls[1], out int id))
             {
                 ID = id;
 
@@ -25,14 +28,13 @@
                 PotentiallyWinningNumbers = ConvertStringListToIntList(winningNumberStringEls);
                 PlayerNumbers = ConvertStringListToIntList(playerNumberStringEls);
 
-                int winNumber = 0;
                 PotentiallyWinningNumbers.ForEach(number =>
                 {
                     if (PlayerNumbers.Contains(number))
                     {
-                        winNumber++;
+                        WinCount++;
                         WinningNumbers.Add(number);
-                        Score = winNumber == 1 ? 1 : Score * 2;
+                        Score = WinCount == 1 ? 1 : Score * 2;
                     }
                 });
             }
@@ -47,9 +49,7 @@
             List<int> parsedNumbers = [];
             numberStrings.ForEach(numberString =>
             {
-                bool numberParsed = int.TryParse(numberString, out int number);
-
-                if (numberParsed)
+                if (int.TryParse(numberString, out int number))
                 {
                     parsedNumbers.Add(number);
                 }

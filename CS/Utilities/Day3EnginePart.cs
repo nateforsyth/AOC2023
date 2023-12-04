@@ -43,10 +43,8 @@ namespace Utilities
                                 if (coordLine.Key == coord.y)
                                 {
                                     if (coord.x >= match.Index && coord.x < (match.Index + match.Length))
-                                    {
-                                        bool partNumberParsed = int.TryParse(match.Value, out int partNumber);
-                                        
-                                        if (partNumberParsed && !surroundingParts.Contains(match))
+                                    {                                        
+                                        if (int.TryParse(match.Value, out int partNumber) && !surroundingParts.Contains(match))
                                         {
                                             surroundingParts.Add(match);
                                             partNumberAggregateTotal += partNumber;
@@ -64,10 +62,7 @@ namespace Utilities
 
             if (partElementIsGear && surroundingParts.Count == 2)
             {
-                bool firstPartParsed = int.TryParse(surroundingParts[0].Value, out int firstPartNumber);
-                bool secondPartParsed = int.TryParse(surroundingParts[1].Value, out int secondPartNumber);
-
-                if (firstPartParsed && secondPartParsed)
+                if (int.TryParse(surroundingParts[0].Value, out int firstPartNumber) && int.TryParse(surroundingParts[1].Value, out int secondPartNumber))
                 {
                     GearRatio = firstPartNumber * secondPartNumber;
                 }

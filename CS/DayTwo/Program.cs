@@ -1,4 +1,4 @@
-﻿using Utilities.LogicLayer;
+﻿using Utilities.Controller;
 
 namespace Day2
 {

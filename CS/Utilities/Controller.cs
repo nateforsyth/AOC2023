@@ -1,10 +1,52 @@
 ﻿using System.Text.RegularExpressions;
 using Utilities.Enums;
 
-namespace Utilities.LogicLayer
+namespace Utilities.Controller
 {
     public class CollectionMethods
     {
+        /// <summary>
+        /// Day Four, Part Two - Process scratch cards adding winners to the queue to also be processed, and count how many were played
+        /// </summary>
+        /// <param name="cards"></param>
+        /// <returns></returns>
+        public static Dictionary<int, List<Day4Card>> ProcessCards(List<Day4Card> cards)
+        {
+            int currentCardIndex = 0;
+            Dictionary<int, List<Day4Card>> processedCards = [];
+
+            int lastCardIndex = cards.Count - 1;
+            Queue<Day4Card> cardsToProcessQueue = new Queue<Day4Card>(cards);
+
+            while (cardsToProcessQueue.Count > 0)
+            {
+                Day4Card card = cardsToProcessQueue.Dequeue();
+                if (!processedCards.TryGetValue(card.ID, out List<Day4Card>? value))
+                {
+                    processedCards.Add(card.ID, [card]);
+                }
+                else
+                {
+                    value.Add(card);
+                }
+
+                for (int cardIndexOffset = 0; cardIndexOffset < card.WinCount; cardIndexOffset++)
+                {
+                    int cardCopyIndex = card.ID + cardIndexOffset;
+                    if (cardCopyIndex <= lastCardIndex)
+                    {
+                        Day4Card cardCopy = cards.ElementAt(cardCopyIndex);
+                        cardCopy.IsCopy = true;
+                        cardsToProcessQueue.Enqueue(cardCopy);
+                    }
+                }
+
+                currentCardIndex++;
+            }
+
+            return processedCards;
+        }
+
         /// <summary>
         /// Day Two, Part One - Extract string input to validate game results
         /// </summary>
@@ -36,9 +78,8 @@ namespace Utilities.LogicLayer
                     foreach (var cubeAndCount in cubeSubsets)
                     {
                         string[] cubeEls = cubeAndCount.Split(" ");
-                        bool countParsed = int.TryParse(cubeEls[0], out int cubeCount);
 
-                        if (countParsed && cubeCount > 0)
+                        if (int.TryParse(cubeEls[0], out int cubeCount) && cubeCount > 0)
                         {
                             switch (cubeEls[1])
                             {
@@ -60,9 +101,7 @@ namespace Utilities.LogicLayer
                     sets.Add(set);
                 }
 
-                bool idParsed = int.TryParse(gameIdEls[1], out int gameId);
-
-                if (idParsed && gameId > 0)
+                if (int.TryParse(gameIdEls[1], out int gameId) && gameId > 0)
                 {
                     Day2Game game = new(gameId, sets, redCubeMax, greenCubeMax, blueCubeMax);
                     dayTwoGames.Add(game);
@@ -102,9 +141,7 @@ namespace Utilities.LogicLayer
 
                 matches.ToList().ForEach((match) =>
                 {
-                    bool charParseSuccess = int.TryParse(match.ToString(), out int i);
-
-                    if (charParseSuccess)
+                    if (int.TryParse(match.ToString(), out int i))
                     {
                         inputInts.Add(i);
                     }
@@ -149,9 +186,7 @@ namespace Utilities.LogicLayer
 
                 foreach (char c in line.ToCharArray())
                 {
-                    bool charParseSuccess = int.TryParse(c.ToString(), out int i);
-
-                    if (charParseSuccess)
+                    if (int.TryParse(c.ToString(), out int i))
                     {
                         inputInts.Add(i);
                     }
@@ -173,9 +208,8 @@ namespace Utilities.LogicLayer
             int inputIntsCount = inputInts.Count;
             int secondIntEl = inputInts.Count == 1 ? inputInts.ElementAt(0) : inputInts.ElementAt(inputIntsCount - 1);
             string concatInts = $"{inputInts.ElementAt(0)}{secondIntEl}";
-            bool calibValParseSuccess = int.TryParse(concatInts, out int calibrationValue);
 
-            if (calibValParseSuccess && calibrationValue > 0)
+            if (int.TryParse(concatInts, out int calibrationValue) && calibrationValue > 0)
             {
                 return calibrationValue;
             }
