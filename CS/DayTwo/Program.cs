@@ -1,6 +1,6 @@
 ﻿using Utilities.LogicLayer;
 
-namespace DayTwo
+namespace Day2
 {
     internal class Program
     {

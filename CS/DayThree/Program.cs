@@ -1,9 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Text;
-using Utilities;
+﻿using Utilities;
 using Utilities.LogicLayer;
 
-namespace DayThree
+namespace Day3
 {
     internal class Program
     {
@@ -19,7 +17,7 @@ namespace DayThree
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"DayTwo failed:\r\n\t{ex.Message}\r\n\t{ex.InnerException?.Message}");
+                Console.WriteLine($"DayThree failed:\r\n\t{ex.Message}\r\n\t{ex.InnerException?.Message}");
             }
 
             List<char> partPositioningSymbols = []; // & * # % $ - @ = + /
@@ -46,7 +44,7 @@ namespace DayThree
                 });
 
             Dictionary<(int xPosition, int yPosition), (char partElement, int partNumberLineLength)> partPositions = [];
-            List<DayThreeEnginePart> parts = [];
+            List<Day3EnginePart> parts = [];
             int currentX = 0;
             int currentY = 0;
 
@@ -71,7 +69,7 @@ namespace DayThree
                 int currentXPos = partElement.Key.xPosition;
                 int currentYPos = partElement.Key.yPosition;
 
-                DayThreeEnginePart part = new(currentXPos, currentYPos, partElement.Value.partElement, partElement.Value.partNumberLineLength);
+                Day3EnginePart part = new(currentXPos, currentYPos, partElement.Value.partElement, partElement.Value.partNumberLineLength);
                                 
                 parts.Add(part);
             }

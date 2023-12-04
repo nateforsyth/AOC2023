@@ -1,15 +1,13 @@
-﻿using static Utilities.DayTwoGame;
-
-namespace Utilities
+﻿namespace Utilities
 {
-    public class DayTwoGame
+    public class Day2Game
     {
         public int ID { get; set; }
         public List<Set> Sets { get; set; }
         public bool IsPossible { get; set; }
         public int TotalSetPower { get; set; }
 
-        public DayTwoGame(int id, List<Set> sets, int redCount, int greenCount, int blueCount)
+        public Day2Game(int id, List<Set> sets, int redCount, int greenCount, int blueCount)
         {
             ID = id;
             Sets = sets;

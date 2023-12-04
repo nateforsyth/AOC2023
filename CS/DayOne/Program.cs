@@ -1,7 +1,6 @@
 ﻿using Utilities.LogicLayer;
-using Utilities.Enums;
 
-namespace DayOne
+namespace Day1
 {
     internal class Program
     {

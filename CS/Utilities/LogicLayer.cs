@@ -16,7 +16,7 @@ namespace Utilities.LogicLayer
         /// <returns></returns>
         public static (int idCount, int totalPower) CalculateGameResults(List<string> gameInput, int redCubeMax, int greenCubeMax, int blueCubeMax)
         {
-            List<DayTwoGame> dayTwoGames = [];
+            List<Day2Game> dayTwoGames = [];
             int idCount = 0;
             int power = 0;
 
@@ -26,11 +26,11 @@ namespace Utilities.LogicLayer
                 string[] gameIdEls = baseGameEls[0].Split(" ");
                 string[] gameCubeSets = baseGameEls[1].Split("; ");
 
-                List<DayTwoGame.Set> sets = new List<DayTwoGame.Set>();
+                List<Day2Game.Set> sets = new List<Day2Game.Set>();
 
                 foreach (var subset in gameCubeSets)
                 {
-                    DayTwoGame.Set set = new DayTwoGame.Set();
+                    Day2Game.Set set = new Day2Game.Set();
                     string[] cubeSubsets = subset.Split(", ");
 
                     foreach (var cubeAndCount in cubeSubsets)
@@ -64,7 +64,7 @@ namespace Utilities.LogicLayer
 
                 if (idParsed && gameId > 0)
                 {
-                    DayTwoGame game = new(gameId, sets, redCubeMax, greenCubeMax, blueCubeMax);
+                    Day2Game game = new(gameId, sets, redCubeMax, greenCubeMax, blueCubeMax);
                     dayTwoGames.Add(game);
                 }
             });

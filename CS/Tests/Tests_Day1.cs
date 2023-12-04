@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 namespace Tests
 {
-    public class DayOneTests
+    public class Tests_Day1
     {
         [TestClass]
         public class PartOne

@@ -17,8 +17,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DayOne\DayOne.csproj" />
-    <ProjectReference Include="..\DayTwo\DayTwo.csproj" />
+    <ProjectReference Include="..\DayOne\Day1.csproj" />
+    <ProjectReference Include="..\DayTwo\Day2.csproj" />
     <ProjectReference Include="..\Utilities\Utilities.csproj" />
   </ItemGroup>
 

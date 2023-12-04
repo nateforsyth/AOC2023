@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Utilities
 {
-    public class DayThreeEnginePart(int xPosition, int yPosition, char partElement, int partNumberLineLength)
+    public class Day3EnginePart(int xPosition, int yPosition, char partElement, int partNumberLineLength)
     {
         public int XPosition { get; set; } = xPosition;
         public int YPosition { get; set; } = yPosition;
@@ -74,6 +74,7 @@ namespace Utilities
             }
         }
 
+        // TODO attempt to use outer bounds of the matrix grid to define invalid coordinates
         private static List<(int x, int y)> CalculateSurroundingCoordinates(int xPosition, int yPosition, int partNumberLineLength)
         {
             List<(int x, int y)> surroundingCoordinates = [];
