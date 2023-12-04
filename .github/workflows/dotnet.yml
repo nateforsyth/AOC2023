@@ -27,6 +27,12 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore ./CS/CS.sln
     - name: Build
-      run: dotnet build ./CS/DayOne/DayOne.csproj --configuration Release --no-restore
+      run: dotnet build ./CS/DayOne/Day1.csproj --configuration Release --no-restore
+    - name: Build
+      run: dotnet build ./CS/DayTwo/Day2.csproj --configuration Release --no-restore
+    - name: Build
+      run: dotnet build ./CS/DayThree/Day3.csproj --configuration Release --no-restore
+    - name: Build
+      run: dotnet build ./CS/DayFour/Day4.csproj --configuration Release --no-restore
     - name: Test
       run: dotnet test ./CS/CS.sln --configuration Release --no-restore
