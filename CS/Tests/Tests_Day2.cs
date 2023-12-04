@@ -8,31 +8,32 @@ using Utilities.Controller;
 
 namespace Tests
 {
+    [TestClass]
     public class Tests_Day2
     {
+        [TestMethod]
+        public void File_WithValidPath_IsNotNull()
+        {
+            // Arrange
+            List<string> fileContent = FileHelpers.GetFileContentFromRelativePath("\\Shared\\Input\\DayTwo\\TestInput_1.txt");
+
+            // Assert
+            Assert.IsNotNull(fileContent);
+        }
+
+        [TestMethod]
+        public void File_WithValidPath_GetsContent()
+        {
+            // Arrange
+            List<string> fileContent = FileHelpers.GetFileContentFromRelativePath("\\Shared\\Input\\DayTwo\\TestInput_1.txt");
+
+            // Assert
+            Assert.IsTrue(fileContent.Count > 0);
+        }
+
         [TestClass]
         public class PartOne
         {
-            [TestMethod]
-            public void File_WithValidPath_IsNotNull()
-            {
-                // Arrange
-                List<string> fileContent = FileHelpers.GetFileContentFromRelativePath("\\Shared\\Input\\DayTwo\\TestInput_1.txt");
-
-                // Assert
-                Assert.IsNotNull(fileContent);
-            }
-
-            [TestMethod]
-            public void File_WithValidPath_GetsContent()
-            {
-                // Arrange
-                List<string> fileContent = FileHelpers.GetFileContentFromRelativePath("\\Shared\\Input\\DayTwo\\TestInput_1.txt");
-
-                // Assert
-                Assert.IsTrue(fileContent.Count > 0);
-            }
-
             [TestMethod]
             public void Game_IsValidInstance_IsNotPossible() // Game 3: 8 green, 6 blue, 20 red; 5 blue, 4 red, 13 green; 5 green, 1 red
             {
@@ -101,26 +102,6 @@ namespace Tests
         [TestClass]
         public class PartTwo
         {
-            [TestMethod]
-            public void File_WithValidPath_IsNotNull()
-            {
-                // Arrange
-                List<string> fileContent = FileHelpers.GetFileContentFromRelativePath("\\Shared\\Input\\DayTwo\\TestInput_1.txt");
-
-                // Assert
-                Assert.IsNotNull(fileContent);
-            }
-
-            [TestMethod]
-            public void File_WithValidPath_GetsContent()
-            {
-                // Arrange
-                List<string> fileContent = FileHelpers.GetFileContentFromRelativePath("\\Shared\\Input\\DayTwo\\TestInput_1.txt");
-
-                // Assert
-                Assert.IsTrue(fileContent.Count > 0);
-            }
-
             [TestMethod]
             public void File_WithValidPath_AggregatesTotalPowerValuesOfAllGames()
             {

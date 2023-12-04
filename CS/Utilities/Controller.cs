@@ -3,6 +3,106 @@ using Utilities.Enums;
 
 namespace Utilities.Controller
 {
+    public class AggregationMethods
+    {
+        public static (int aggregatedPartNumberTotal, int aggregatedGearRatioTotal) AggregatePartsData(List<char> partPositioningSymbols, Dictionary<int, List<char>> partsMatrix)
+        {
+            Dictionary<(int xPosition, int yPosition), (char partElement, int partNumberLineLength)> partPositions = [];
+            List<Day3EnginePart> parts = [];
+            int currentX = 0;
+            int currentY = 0;
+
+            foreach (KeyValuePair<int, List<char>> line in partsMatrix)
+            {
+                foreach (char c in line.Value)
+                {
+                    //Console.Write(c);
+                    if (partPositioningSymbols.Contains(c))
+                    {
+                        partPositions.Add((currentX, currentY), (c, line.Value.Count));
+                    }
+                    currentX++;
+                }
+                currentY++;
+                currentX = 0;
+                //Console.Write("\n");
+            }
+
+            foreach (var partElement in partPositions)
+            {
+                int currentXPos = partElement.Key.xPosition;
+                int currentYPos = partElement.Key.yPosition;
+
+                Day3EnginePart part = new(currentXPos, currentYPos, partElement.Value.partElement, partElement.Value.partNumberLineLength);
+
+                parts.Add(part);
+            }
+
+            int aggregatedPartNumberTotal = 0;
+            int aggregatedGearRatioTotal = 0;
+
+            parts.ForEach(part =>
+            {
+                Dictionary<int, List<char>> partsMatrixSubset = [];
+
+                part.SurroundingCoordinates.ForEach(coord =>
+                {
+                    if (!partsMatrixSubset.ContainsKey(coord.y))
+                    {
+                        KeyValuePair<int, List<char>> partsLine = partsMatrix.Where(e => e.Key == coord.y).FirstOrDefault();
+
+                        if (partsLine.Key >= 0 && partsLine.Value.Count > 0)
+                        {
+                            partsMatrixSubset.Add(partsLine.Key, partsLine.Value);
+                        }
+                    }
+                });
+
+                part.SurroundingLines = partsMatrixSubset;
+                part.CalculateSurroundingPartsFromCoords(part.SurroundingLines, part.PartElement);
+                aggregatedPartNumberTotal += part.SurroundingPartNumberAggregate;
+                aggregatedGearRatioTotal += part.GearRatio;
+            });
+
+            return (aggregatedPartNumberTotal, aggregatedGearRatioTotal);
+        }
+    }
+
+    public class ValidationMethods
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fileContent"></param>
+        /// <returns></returns>
+        public static (List<char> partPositioningSymbols, Dictionary<int, List<char>> partsMatrix) CreatePartsMatrix(List<string> fileContent)
+        {
+            List<char> partPositioningSymbols = []; // & * # % $ - @ = + /
+            Dictionary<int, List<char>> partsMatrix = [];
+            int currentLine = 0;
+
+            // get supported symbols from input
+            fileContent?.ForEach(line =>
+            {
+                List<char> partNumberLine = [];
+                foreach (char c in line.ToCharArray())
+                {
+                    if (!partPositioningSymbols.Contains(c))
+                    {
+                        if (!int.TryParse(c.ToString(), out int parsedInt) && c != '.')
+                        {
+                            partPositioningSymbols.Add(c);
+                        }
+                    }
+                    partNumberLine.Add(c);
+                }
+                partsMatrix.Add(currentLine++, partNumberLine);
+            });
+
+            return (partPositioningSymbols, partsMatrix);
+        }
+    }
+
     public class CollectionMethods
     {
         /// <summary>
