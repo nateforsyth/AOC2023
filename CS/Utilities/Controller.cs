@@ -1,10 +1,17 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Numerics;
+using System.Text.RegularExpressions;
 using Utilities.Enums;
 
 namespace Utilities.Controller
 {
     public class AggregationMethods
     {
+        /// <summary>
+        /// Day Three - Aggregate total part number value and total gear ratio
+        /// </summary>
+        /// <param name="partPositioningSymbols"></param>
+        /// <param name="partsMatrix"></param>
+        /// <returns>Tuple; aggregatedPartNumberTotal, aggregatedGearRatioTotal</returns>
         public static (int aggregatedPartNumberTotal, int aggregatedGearRatioTotal) AggregatePartsData(List<char> partPositioningSymbols, Dictionary<int, List<char>> partsMatrix)
         {
             Dictionary<(int xPosition, int yPosition), (char partElement, int partNumberLineLength)> partPositions = [];
@@ -71,10 +78,10 @@ namespace Utilities.Controller
     public class ValidationMethods
     {
         /// <summary>
-        /// 
+        /// Day Three - Create Parts Matrix and Part Positioning Symbols from file content
         /// </summary>
         /// <param name="fileContent"></param>
-        /// <returns></returns>
+        /// <returns>Tuple; partPositioningSymbols, partsMatrix</returns>
         public static (List<char> partPositioningSymbols, Dictionary<int, List<char>> partsMatrix) CreatePartsMatrix(List<string> fileContent)
         {
             List<char> partPositioningSymbols = []; // & * # % $ - @ = + /
@@ -105,6 +112,128 @@ namespace Utilities.Controller
 
     public class CollectionMethods
     {
+        /// <summary>
+        /// Day Five, Part One - Calculate the Lowest seed location value from planting data
+        /// </summary>
+        /// <param name="fileContent"></param>
+        /// <returns>Single seed location value</returns>
+        public static BigInteger CalculateLowestLocationValueFromSeedPlantingList(List<string> fileContent)
+        {
+            List<Day5PlantingCategory> plantingCategoryList = [];
+            BigInteger lowestLocationNumber = -1;
+
+            if (fileContent != null)
+            {
+                List<BigInteger> seeds = [];
+
+                for (int lineIndex = 0; lineIndex < fileContent.Count; lineIndex++)
+                {
+                    string line = fileContent[lineIndex];
+
+                    string elTitle = string.Empty;
+                    if (lineIndex == 0) // first line
+                    {
+                        string[] firstLineEls = line.Split(": ");
+                        string[] firstLineSeedEls = [];
+
+                        if (firstLineEls.Length == 2)
+                        {
+                            elTitle = firstLineEls[0];
+                            firstLineSeedEls = firstLineEls[1].Split(" ");
+
+                            if (firstLineSeedEls.Length > 0)
+                            {
+                                foreach (string seedStr in firstLineSeedEls)
+                                {
+                                    if (int.TryParse(seedStr, out int seedInt))
+                                    {
+                                        seeds.Add(seedInt);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else if (string.IsNullOrEmpty(line)) // first empty line, continue
+                    {
+                        continue;
+                    }
+                    else if (line.Contains("map")) // subsequent header line
+                    {
+                        string[] headerLineEls = line.Split(" map:");
+
+                        if (headerLineEls.Length > 0)
+                        {
+                            elTitle = headerLineEls[0];
+                        }
+
+                        Day5PlantingCategory plantingCategory = new Day5PlantingCategory(elTitle);
+                        bool endOfFile = false;
+
+                        while (!string.IsNullOrEmpty(line) && !endOfFile)
+                        {
+                            lineIndex++;
+                            line = fileContent[lineIndex];
+
+                            if (!string.IsNullOrEmpty(line))
+                            {
+                                try
+                                {
+                                    plantingCategory.AddCategoryMapInstance(line);
+                                }
+                                catch (ArgumentNullException aNEx)
+                                {
+                                    Console.WriteLine($"aNEx: {aNEx.Message}");
+                                }
+                                catch (ArgumentOutOfRangeException aOOREx)
+                                {
+                                    Console.WriteLine($"aOOREx: {aOOREx.Message}");
+                                }
+                                catch (Exception ex)
+                                {
+                                    Console.WriteLine($"ex: {ex.Message}");
+                                }
+                            }
+
+                            endOfFile = lineIndex == fileContent.Count - 1;
+                        }
+
+                        plantingCategoryList.Add(plantingCategory);
+
+                        continue;
+
+                        // check for rows of data before next header line
+                    }
+                    else // subsequent line, shouldn't ever be hit
+                    {
+                        Console.WriteLine($"Something's gone horribly wrong!");
+                    }
+                }
+
+                List<KeyValuePair<BigInteger, BigInteger>> mappedSeeds = [];
+                foreach (var plantingCategory in plantingCategoryList)
+                {
+                    if (mappedSeeds.Count == 0) // first iteration
+                    {
+                        mappedSeeds = plantingCategory.MapSeedsToCategoryMaps(seeds);
+                    }
+                    else // subsequent iterations
+                    {
+                        List<BigInteger> mappedSeedList = [];
+                        mappedSeeds.ForEach(ms =>
+                        {
+                            mappedSeedList.Add(ms.Value);
+                        });
+
+                        mappedSeeds = plantingCategory.MapSeedsToCategoryMaps(mappedSeedList);
+                    }
+                }
+
+                lowestLocationNumber = mappedSeeds.Min(ms => ms.Value);
+            }
+
+            return lowestLocationNumber;
+        }
+
         /// <summary>
         /// Day Four, Part Two - Process scratch cards adding winners to the queue to also be processed, and count how many were played
         /// </summary>
