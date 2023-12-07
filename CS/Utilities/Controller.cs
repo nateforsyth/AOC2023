@@ -1,4 +1,4 @@
-﻿using System.Numerics;
+﻿using System.Collections.Concurrent;
 using System.Text.RegularExpressions;
 using Utilities.Enums;
 
@@ -113,125 +113,170 @@ namespace Utilities.Controller
     public class CollectionMethods
     {
         /// <summary>
-        /// Day Five, Part One - Calculate the Lowest seed location value from planting data
+        /// Day Five, Part One - Calculate the Lowest seed location value from planting data, uses distinctly defined seeds
         /// </summary>
         /// <param name="fileContent"></param>
+        /// <param name="partTwo">Is part two, default = false</param>
         /// <returns>Single seed location value</returns>
-        public static BigInteger CalculateLowestLocationValueFromSeedPlantingList(List<string> fileContent)
+        public static long CalculateLowestLocationValueFromSeedPlantingList_1(List<string> fileContent)
         {
-            List<Day5PlantingCategory> plantingCategoryList = [];
-            BigInteger lowestLocationNumber = -1;
+            long lowestLocationNumber = -1;
 
             if (fileContent != null)
             {
-                List<BigInteger> seeds = [];
+                var parsedData = ParseDay5Input(fileContent);
+                IEnumerable<long> seeds = parsedData.seeds;
 
-                for (int lineIndex = 0; lineIndex < fileContent.Count; lineIndex++)
+                foreach (var plantingCategory in parsedData.plantingCategoryList)
                 {
-                    string line = fileContent[lineIndex];
-
-                    string elTitle = string.Empty;
-                    if (lineIndex == 0) // first line
-                    {
-                        string[] firstLineEls = line.Split(": ");
-                        string[] firstLineSeedEls = [];
-
-                        if (firstLineEls.Length == 2)
-                        {
-                            elTitle = firstLineEls[0];
-                            firstLineSeedEls = firstLineEls[1].Split(" ");
-
-                            if (firstLineSeedEls.Length > 0)
-                            {
-                                foreach (string seedStr in firstLineSeedEls)
-                                {
-                                    if (int.TryParse(seedStr, out int seedInt))
-                                    {
-                                        seeds.Add(seedInt);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    else if (string.IsNullOrEmpty(line)) // first empty line, continue
-                    {
-                        continue;
-                    }
-                    else if (line.Contains("map")) // subsequent header line
-                    {
-                        string[] headerLineEls = line.Split(" map:");
-
-                        if (headerLineEls.Length > 0)
-                        {
-                            elTitle = headerLineEls[0];
-                        }
-
-                        Day5PlantingCategory plantingCategory = new Day5PlantingCategory(elTitle);
-                        bool endOfFile = false;
-
-                        while (!string.IsNullOrEmpty(line) && !endOfFile)
-                        {
-                            lineIndex++;
-                            line = fileContent[lineIndex];
-
-                            if (!string.IsNullOrEmpty(line))
-                            {
-                                try
-                                {
-                                    plantingCategory.AddCategoryMapInstance(line);
-                                }
-                                catch (ArgumentNullException aNEx)
-                                {
-                                    Console.WriteLine($"aNEx: {aNEx.Message}");
-                                }
-                                catch (ArgumentOutOfRangeException aOOREx)
-                                {
-                                    Console.WriteLine($"aOOREx: {aOOREx.Message}");
-                                }
-                                catch (Exception ex)
-                                {
-                                    Console.WriteLine($"ex: {ex.Message}");
-                                }
-                            }
-
-                            endOfFile = lineIndex == fileContent.Count - 1;
-                        }
-
-                        plantingCategoryList.Add(plantingCategory);
-
-                        continue;
-
-                        // check for rows of data before next header line
-                    }
-                    else // subsequent line, shouldn't ever be hit
-                    {
-                        Console.WriteLine($"Something's gone horribly wrong!");
-                    }
+                    seeds = plantingCategory.MapSeedsToCategoryMaps(seeds).ToList();
                 }
-
-                List<KeyValuePair<BigInteger, BigInteger>> mappedSeeds = [];
-                foreach (var plantingCategory in plantingCategoryList)
-                {
-                    if (mappedSeeds.Count == 0) // first iteration
-                    {
-                        mappedSeeds = plantingCategory.MapSeedsToCategoryMaps(seeds);
-                    }
-                    else // subsequent iterations
-                    {
-                        List<BigInteger> mappedSeedList = [];
-                        mappedSeeds.ForEach(ms =>
-                        {
-                            mappedSeedList.Add(ms.Value);
-                        });
-
-                        mappedSeeds = plantingCategory.MapSeedsToCategoryMaps(mappedSeedList);
-                    }
-                }
-
-                lowestLocationNumber = mappedSeeds.Min(ms => ms.Value);
+                long min = seeds.Min();
+                lowestLocationNumber = min;
             }
 
             return lowestLocationNumber;
+        }
+
+        /// <summary>
+        /// Day Two, Part One - Calculate the Lowest seed location value from planting data, uses seed ranges
+        /// </summary>
+        /// <param name="fileContent"></param>
+        /// <param name="partTwo">Is part two, default = false</param>
+        /// <returns>Single seed location value</returns>
+        public static long CalculateLowestLocationValueFromSeedPlantingList_2(List<string> fileContent)
+        {
+            ConcurrentBag<long> lows = [];
+            long lowestLocationNumber = -1;
+            bool useRange = true;
+
+            if (fileContent != null)
+            {
+                var (plantingCategoryList, seeds) = ParseDay5Input(fileContent, useRange);
+
+                Parallel.ForEach(seeds, seed =>
+                {
+                    //Console.Write($"\r\n{seed}");
+                    int iteration = 0;
+                    long min = 0;
+                    foreach (Day5PlantingCategory plantingCategory in plantingCategoryList)
+                    {
+                        //Console.Write($"\r\n\t|{iteration}");
+                        if (iteration == 0)
+                        {
+                            min = plantingCategory.GetLowestCategoryNumberForSeed(seed);
+                        }
+                        else
+                        {
+                            min = plantingCategory.GetLowestCategoryNumberForSeed(min);
+                        }
+
+                        //Console.Write($", min: {min}");
+
+                        if (plantingCategory.Name == "humidity-to-location")
+                        {
+                            var currentLowest = Interlocked.Read(ref lowestLocationNumber);
+                            if (min < currentLowest || currentLowest == -1)
+                            {
+                                Interlocked.CompareExchange(ref lowestLocationNumber, min, lowestLocationNumber);
+                            }
+                        }
+
+                        iteration++;
+                    }
+                });
+            }
+
+            Console.WriteLine();
+
+            return lowestLocationNumber;
+        }
+
+        /// <summary>
+        /// Day Five - Parse Day 5 input and get Lists of planting categories and seeds
+        /// </summary>
+        /// <param name="fileContent"></param>
+        /// <returns>Tuple, List of planting categories and a List of seeds</returns>
+        public static (List<Day5PlantingCategory> plantingCategoryList, IEnumerable<long> seeds) ParseDay5Input(List<string> fileContent, bool useRange = false)
+        {
+            List<Day5PlantingCategory> plantingCategoryList = [];
+            IEnumerable<long> seeds = [];
+            for (int lineIndex = 0; lineIndex < fileContent.Count; lineIndex++)
+            {
+                string line = fileContent[lineIndex];
+
+                string elTitle = string.Empty;
+                if (lineIndex == 0) // first line
+                {
+                    List<string> firstLineEls = [.. line.Split(": ")];
+                    List<string> firstLineSeedEls = [];
+
+                    if (firstLineEls.Count == 2)
+                    {
+                        elTitle = firstLineEls[0];
+                        firstLineSeedEls = [.. firstLineEls.ElementAt(1).Split(" ")];
+
+                        if (firstLineSeedEls.Count > 0)
+                        {
+                            seeds = StringMethods.GetSeedCollectionFromFileContent(firstLineSeedEls, useRange);
+                        }
+                    }
+                }
+                else if (string.IsNullOrEmpty(line)) // first empty line, continue
+                {
+                    continue;
+                }
+                else if (line.Contains("map")) // subsequent header line
+                {
+                    string[] headerLineEls = line.Split(" map:");
+
+                    if (headerLineEls.Length > 0)
+                    {
+                        elTitle = headerLineEls[0];
+                    }
+
+                    Day5PlantingCategory plantingCategory = new Day5PlantingCategory(elTitle);
+                    bool endOfFile = false;
+
+                    while (!string.IsNullOrEmpty(line) && !endOfFile)
+                    {
+                        lineIndex++;
+                        line = fileContent[lineIndex];
+
+                        if (!string.IsNullOrEmpty(line))
+                        {
+                            try
+                            {
+                                plantingCategory.AddCategoryMapInstance(line);
+                            }
+                            catch (ArgumentNullException aNEx)
+                            {
+                                Console.WriteLine($"aNEx: {aNEx.Message}");
+                            }
+                            catch (ArgumentOutOfRangeException aOOREx)
+                            {
+                                Console.WriteLine($"aOOREx: {aOOREx.Message}");
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine($"ex: {ex.Message}");
+                            }
+                        }
+
+                        endOfFile = lineIndex == fileContent.Count - 1;
+                    }
+
+                    plantingCategoryList.Add(plantingCategory);
+
+                    continue;
+                }
+                else // subsequent line, shouldn't ever be hit
+                {
+                    Console.WriteLine($"Something's gone horribly wrong!");
+                }
+            }
+
+            return (plantingCategoryList, seeds);
         }
 
         /// <summary>
@@ -353,6 +398,53 @@ namespace Utilities.Controller
 
     public class StringMethods
     {
+        /// <summary>
+        /// Day Five - Calculate a collection of seeds from seed string elements using either distinct values or ranges
+        /// </summary>
+        /// <param name="seedEls"></param>
+        /// <param name="useRange"></param>
+        /// <returns>List of Int64 values of individual seeds</returns>
+        public static IEnumerable<long> GetSeedCollectionFromFileContent(List<string> seedEls, bool useRange = false)
+        {
+            IEnumerable<long> seeds = [];
+            long maxRange = 0;
+            if (!useRange) // part one
+            {
+                foreach (string seedStr in seedEls)
+                {
+                    if (int.TryParse(seedStr, out int seed))
+                    {
+                        yield return seed;
+                    }
+                }
+            }
+            else // part two
+            {
+                int numberOfSeedPairs = seedEls.Count / 2;
+
+                for (int i = 0; i < seedEls.Count; i++)
+                {
+                    string seedStr = seedEls[i];
+                    string rangeStr = seedEls[++i];
+
+                    bool seedLongParsed = long.TryParse(seedStr, out long seedLong);
+                    bool rangeLongParsed = long.TryParse(rangeStr, out long rangeLong);
+                    maxRange += rangeLong;
+
+                    if (seedLongParsed && rangeLongParsed)
+                    {
+                        long calculatedLastSeed = (seedLong + rangeLong);
+                        for (long seed = seedLong; seed < calculatedLastSeed; seed++)
+                        {
+                            yield return seed;
+                        }
+                    }
+                }
+            }
+
+            //return seeds;
+        }
+
         /// <summary>
         /// Day One, Part Two - Extract number values from Input strings using a Regular Expression and calculate total calibration value
         /// </summary>
