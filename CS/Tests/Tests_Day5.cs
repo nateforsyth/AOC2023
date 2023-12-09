@@ -42,26 +42,28 @@ namespace Tests
                 List<string> fileContent = FileHelpers.GetFileContentFromRelativePath("\\Shared\\Input\\DayFive\\TestInput.txt");
 
                 // Act
-                BigInteger lowestLocationNumber = CollectionMethods.CalculateLowestLocationValueFromSeedPlantingList(fileContent);
+                long lowestLocationNumber_PartOne = CollectionMethods.CalculateLowestLocationValueFromSeedPlantingList_1(fileContent);
 
                 // Assert
-                Assert.AreEqual(35, lowestLocationNumber);
+                Assert.AreEqual(35, lowestLocationNumber_PartOne);
             }
         }
 
-        //[TestClass]
-        //public class PartTwo
-        //{
-        //    [TestMethod]
-        //    public void File_WithValidPath_CalculatesTotalScratchCardScore()
-        //    {
-        //        // Arrange
-        //        List<string> fileContent = FileHelpers.GetFileContentFromRelativePath("\\Shared\\Input\\DayFive\\TestInput.txt");
+        [TestClass]
+        public class PartTwo
+        {
+            [TestMethod]
+            public void File_WithValidPath_CalculatesLowestLocationValueWithExtendedSeedRange()
+            {
+                // Arrange
+                List<string> fileContent = FileHelpers.GetFileContentFromRelativePath("\\Shared\\Input\\DayFive\\TestInput.txt");
 
-        //        // Act
+                // Act
+                long lowestLocationNumber_PartTwo = CollectionMethods.CalculateLowestLocationValueFromSeedPlantingList_2(fileContent);
 
-        //        // Assert
-        //    }
-        //}
+                // Assert
+                Assert.AreEqual(46, lowestLocationNumber_PartTwo);
+            }
+        }
     }
 }
