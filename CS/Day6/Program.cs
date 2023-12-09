@@ -12,7 +12,6 @@ namespace Day6
             List<string>? fileContent = null;
             try
             {
-                //fileContent = FileHelpers.GetFileContentFromRelativePath("\\Shared\\Input\\DaySix\\TestInput.txt");
                 fileContent = FileHelpers.GetFileContentFromRelativePath("\\Shared\\Input\\DaySix\\Input.txt");
             }
             catch (Exception ex)
@@ -24,13 +23,13 @@ namespace Day6
             if (fileContent != null)
             {
                 #region Part One
-                int marginOfError_1 = AggregationMethods.CalculateShortRaceMarginOfError(fileContent);
-                Console.WriteLine($"Day Six\r\n\tPart One, marginOfError: {marginOfError_1}");
+                long marginOfError = AggregationMethods.CalculateShortRaceMarginOfError(fileContent);
+                Console.WriteLine($"Day Six\r\n\tPart One, marginOfError: {marginOfError}");
                 #endregion
 
                 #region Part Two
-                long marginOfError_2 = AggregationMethods.CalculateLongRacePossibilities(fileContent);
-                Console.WriteLine($"Day Six\r\n\tPart Two, marginOfError: {marginOfError_2}");
+                long possibilities = AggregationMethods.CalculateLongRacePossibilities(fileContent);
+                Console.WriteLine($"Day Six\r\n\tPart Two, possibilities: {possibilities}");
                 #endregion
             }
 

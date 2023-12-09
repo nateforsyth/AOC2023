@@ -1,4 +1,6 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
+using System.Net.Sockets;
 using System.Text.RegularExpressions;
 using Utilities.Enums;
 
@@ -73,6 +75,68 @@ namespace Utilities.Controller
 
             return (aggregatedPartNumberTotal, aggregatedGearRatioTotal);
         }
+
+        /// <summary>
+        /// Day Six, Part Two - Calculate the the number of possible ways a race can be won for a collection of races from imported file content
+        /// </summary>
+        /// <param name="fileContent"></param>
+        /// <returns></returns>
+        public static long CalculateLongRacePossibilities(List<string> fileContent)
+        {
+            var (times, distances) = CollectionMethods.GetTimesAndDistancesFromFileContent(fileContent, true);
+            long possibilityCount = CalculateRaceOutcome(times, distances);
+            return possibilityCount;
+        }
+
+        /// <summary>
+        /// Day Six - Calculate race overallOutcome possibilities or overallOutcome for error
+        /// </summary>
+        /// <param name="times"></param>
+        /// <param name="distances"></param>
+        /// <returns></returns>
+        public static long CalculateRaceOutcome(List<long> times, List<long> distances)
+        {
+            long overallOutcome = 0;
+            List<long> raceOutcomes = [];
+
+            if (times.Count == distances.Count)
+            {
+                for (int i = 0; i < times.Count; i++)
+                {
+                    List<long> outcomes = [];
+                    var speed = 0;
+                    var time = times[i];
+                    var distance = distances[i];
+
+                    for (long countdown = time; countdown > 0; countdown--)
+                    {
+                        if ((countdown * speed) > distance)
+                        {
+                            outcomes.Add(countdown);
+                        }
+
+                        speed++;
+                    }
+
+                    raceOutcomes.Add(outcomes.Count);
+                }
+            }
+
+            overallOutcome = raceOutcomes.Aggregate((m1, m2) => m1 * m2);
+            return overallOutcome;
+        }
+
+        /// <summary>
+        /// Day Six, Part One - Calculate the overallOutcome of error for a collection of races from imported file content
+        /// </summary>
+        /// <param name="fileContent"></param>
+        /// <returns></returns>
+        public static long CalculateShortRaceMarginOfError(List<string> fileContent)
+        {
+            var (times, distances) = CollectionMethods.GetTimesAndDistancesFromFileContent(fileContent);
+            long margin = CalculateRaceOutcome(times, distances);
+            return margin;
+        }
     }
 
     public class ValidationMethods
@@ -112,6 +176,63 @@ namespace Utilities.Controller
 
     public class CollectionMethods
     {
+        /// <summary>
+        /// Day Six - Calculate the the number of possible ways a race can be won for a collection of races from imported file content
+        /// </summary>
+        /// <param name="fileContent"></param>
+        /// <param name="partTwo"></param>
+        /// <returns></returns>
+        public static (List<long> times, List<long> distances) GetTimesAndDistancesFromFileContent(List<string> fileContent, bool partTwo = false)
+        {
+            string pattern = @"\b\d+\b";
+
+            List<long> times = [];
+            List<long> distances = [];
+
+            int index = 0;
+            foreach (var line in fileContent)
+            {
+                MatchCollection matches = Regex.Matches(line, pattern, RegexOptions.IgnoreCase);
+
+                if (partTwo)
+                {
+                    string aggregatedMatchStr = matches.Select(m => m.Value).Aggregate((s1, s2) => s1 + s2);
+                    if (long.TryParse(aggregatedMatchStr, out long matchVal))
+                    {
+                        if (index == 0)
+                        {
+                            times.Add(matchVal);
+                        }
+                        else
+                        {
+                            distances.Add(matchVal);
+                        }
+                    }
+                }
+                else
+                {
+                    foreach (var match in matches.Cast<Match>())
+                    {
+                        if (match.Success && long.TryParse(match.Value, out long value))
+                        {
+                            if (index == 0)
+                            {
+                                times.Add(value);
+                            }
+                            else
+                            {
+                                distances.Add(value);
+                            }
+                        }
+                    }
+                }
+
+                index++;
+            }
+
+            return (times, distances);
+        }
+
         /// <summary>
         /// Day Five, Part One - Calculate the Lowest seed location value from planting data, uses distinctly defined seeds
         /// </summary>
@@ -161,7 +282,7 @@ namespace Utilities.Controller
                     long min = 0;
                     foreach (Day5PlantingCategory plantingCategory in plantingCategoryList)
                     {
-                        //Console.Write($"\r\n\t|{iteration}");
+                        //Console.Write($"\r\n\i|{iteration}");
                         if (iteration == 0)
                         {
                             min = plantingCategory.GetLowestCategoryNumberForSeed(seed);
@@ -270,7 +391,7 @@ namespace Utilities.Controller
 
                     continue;
                 }
-                else // subsequent line, shouldn't ever be hit
+                else // subsequent line, shouldn'i ever be hit
                 {
                     Console.WriteLine($"Something's gone horribly wrong!");
                 }
