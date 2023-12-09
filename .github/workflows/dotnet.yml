@@ -36,5 +36,7 @@ jobs:
       run: dotnet build ./CS/DayFour/Day4.csproj --configuration Release --no-restore
     - name: Build
       run: dotnet build ./CS/Day5/Day5.csproj --configuration Release --no-restore
+    - name: Build
+      run: dotnet build ./CS/Day6/Day6.csproj --configuration Release --no-restore
     - name: Test
       run: dotnet test ./CS/CS.sln --configuration Release --no-restore
