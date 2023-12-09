@@ -14,7 +14,6 @@ namespace Day5
             try
             {
                 fileContent = FileHelpers.GetFileContentFromRelativePath("\\Shared\\Input\\DayFive\\Input.txt");
-                //fileContent = FileHelpers.GetFileContentFromRelativePath("\\Shared\\Input\\DayFive\\TestInput.txt");
             }
             catch (Exception ex)
             {
@@ -25,18 +24,18 @@ namespace Day5
             if (fileContent != null )
             {
                 #region Part One
-                BigInteger lowestLocationNumber = CollectionMethods.CalculateLowestLocationValueFromSeedPlantingList(fileContent);
-                Console.WriteLine($"Day Five\r\n\tPart One, lowestLocationNumber: {lowestLocationNumber}");
+                long lowestLocationNumber_PartOne = CollectionMethods.CalculateLowestLocationValueFromSeedPlantingList_1(fileContent);
+                Console.WriteLine($"Day Five\r\n\tPart One, lowestLocationNumber: {lowestLocationNumber_PartOne}");
                 #endregion
 
                 #region Part Two
-
-                Console.WriteLine($"\tPart Two, something: {0}\r\n");
+                long lowestLocationNumber_PartTwo = CollectionMethods.CalculateLowestLocationValueFromSeedPlantingList_2(fileContent);
+                Console.WriteLine($"Day Five\r\n\tPart Two, lowestLocationNumber: {lowestLocationNumber_PartTwo}");
                 #endregion
             }
 
             DateTime end = DateTime.Now;
-            Console.WriteLine($"Elapsed time: {(end - start).TotalMilliseconds}ms");
+            Console.WriteLine($"\r\nElapsed time: {(end - start).TotalMilliseconds}ms");
             Console.Read();
         }
     }

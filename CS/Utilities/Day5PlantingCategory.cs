@@ -23,9 +23,9 @@ namespace Utilities
             {
                 List<string> categories = [.. categoryMapString.Split(" ")];
 
-                if (BigInteger.TryParse(categories[0], out BigInteger destinationRangeStart) &&
-                    BigInteger.TryParse(categories[1], out BigInteger sourceRangeStart) &&
-                    BigInteger.TryParse(categories[2], out BigInteger rangeLength))
+                if (long.TryParse(categories[0], out long destinationRangeStart) &&
+                    long.TryParse(categories[1], out long sourceRangeStart) &&
+                    long.TryParse(categories[2], out long rangeLength))
                 {
 
                     CategoryMaps.Add(new CategoryMap(destinationRangeStart, sourceRangeStart, rangeLength));
@@ -37,40 +37,42 @@ namespace Utilities
             }
         }
 
-        public List<KeyValuePair<BigInteger, BigInteger>> MapSeedsToCategoryMaps(List<BigInteger> seeds)
+        public IEnumerable<long> MapSeedsToCategoryMaps(IEnumerable<long> seeds)
         {
-            List <KeyValuePair<BigInteger, BigInteger>> seedsAndCategories = [];
-            foreach (BigInteger seed in seeds)
+            foreach (long seed in seeds)
             {
-                BigInteger categoryNumber = -1;
-                foreach (CategoryMap categoryMap in CategoryMaps)
-                {
-                    if (seed >= categoryMap.SourceRangeStart && seed <= categoryMap.SourceRangeEnd)
-                    {
-                        categoryNumber = seed + categoryMap.Offset;
-                        continue;
-                    }
-                }
-                
-                if (categoryNumber == -1)
-                {
-                    categoryNumber = seed;
-                }
-
-                seedsAndCategories.Add(new KeyValuePair<BigInteger, BigInteger>(seed, categoryNumber));
+                yield return GetLowestCategoryNumberForSeed(seed);
             }
-
-            return seedsAndCategories;
         }
 
-        public class CategoryMap(BigInteger destinationRangeStart, BigInteger sourceRangeStart, BigInteger rangeLength)
+        public long GetLowestCategoryNumberForSeed(long seed)
         {
-            public BigInteger DestinationRangeStart { get; set; } = destinationRangeStart;
-            public BigInteger DestinationRangeEnd { get; set; } = destinationRangeStart + rangeLength - 1;
-            public BigInteger SourceRangeStart { get; set; } = sourceRangeStart;
-            public BigInteger SourceRangeEnd { get; set; } = sourceRangeStart + rangeLength - 1;
-            public BigInteger RangeLength { get; set; } = rangeLength;
-            public BigInteger Offset { get; set; } = destinationRangeStart - sourceRangeStart;
+            long categoryNumber = -1;
+            foreach (CategoryMap categoryMap in CategoryMaps)
+            {
+                if (seed >= categoryMap.SourceRangeStart && seed <= categoryMap.SourceRangeEnd)
+                {
+                    categoryNumber = seed + categoryMap.Offset;
+                    continue;
+                }
+            }
+
+            if (categoryNumber == -1)
+            {
+                categoryNumber = seed;
+            }
+
+            return categoryNumber;
+        }
+
+        public class CategoryMap(long destinationRangeStart, long sourceRangeStart, long rangeLength)
+        {
+            public long DestinationRangeStart { get; set; } = destinationRangeStart;
+            public long DestinationRangeEnd { get; set; } = destinationRangeStart + rangeLength - 1;
+            public long SourceRangeStart { get; set; } = sourceRangeStart;
+            public long SourceRangeEnd { get; set; } = sourceRangeStart + rangeLength - 1;
+            public long RangeLength { get; set; } = rangeLength;
+            public long Offset { get; set; } = destinationRangeStart - sourceRangeStart;
         }
     }
 }
