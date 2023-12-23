@@ -7,12 +7,13 @@ using static Day7.Enums;
 
 namespace Day7
 {
-    public class Hand (List<Enums.Cards> cards, int bid)
+    public class Hand (List<Enums.Cards> cards, int bid, bool partTwo = false)
     {
         public List<Enums.Cards> Cards { get; set; } = cards;
         public int Bid { get; set; } = bid;
-        public int Rank { get; set; }
         public int Winnings { get; set; }
+
+        public bool PartTwo { get; set; } = partTwo;
 
         public Enums.Cards HighCard { get; set; } = GetHighCardInHand(cards);
         public Enums.HandType HandType { get; set; } = GetHandType(cards);
@@ -27,6 +28,7 @@ namespace Day7
         private static Enums.HandType GetHandType(List<Enums.Cards> cards)
         {
             Dictionary<Enums.Cards, int> validatedCards = [];
+            int jokerCount = cards.Where(c => c == Enums.Cards.Joker).Count();
 
             foreach (Enums.Cards card in cards)
             {
@@ -40,15 +42,15 @@ namespace Day7
                 }
             }
 
-            if (validatedCards.Any(c => c.Value == 5))
+            if (validatedCards.Any(c => (c.Value + jokerCount) == 5))
             {
                 return Enums.HandType.FiveOfAKind;
             }
-            else if (validatedCards.Any(c => c.Value == 4))
+            else if (validatedCards.Any(c => (c.Value + jokerCount) == 4))
             {
                 return Enums.HandType.FourOfAKind;
             }
-            else if (validatedCards.Any(c => c.Value == 3))
+            else if (validatedCards.Any(c => (c.Value + jokerCount) == 3))
             {
                 if (validatedCards.Any(p => p.Value == 2))
                 {
@@ -59,13 +61,32 @@ namespace Day7
                     return Enums.HandType.ThreeOfAKind;
                 }
             }
-            else if (validatedCards.Count(c => c.Value == 2) == 2)
+            //else if (validatedCards.Count(c => c.Value == 2) == 2)
+            //{
+            //    return Enums.HandType.TwoPair;
+            //}
+            else if (validatedCards.Any(c => (c.Value + jokerCount) == 2))
             {
-                return Enums.HandType.TwoPair;
-            }
-            else if (validatedCards.Any(c => c.Value == 2))
-            {
-                return Enums.HandType.OnePair;
+                if ((validatedCards.Count(c => c.Value == 2) == 2) && jokerCount > 0)
+                {
+
+                }
+                Dictionary<Enums.Cards, int> pairValidatedCards = [];
+                foreach (var card in validatedCards)
+                {
+                    if (card.Value != 0 && card.Value != validatedCards.Max(c => c.Value))
+                    {
+                        pairValidatedCards.Add(card.Key, card.Value);
+                    }
+                }
+                if (pairValidatedCards.Any(c => c.Value == 2))
+                {
+                    return Enums.HandType.TwoPair;
+                }
+                else
+                {
+                    return Enums.HandType.OnePair;
+                }
             }
             else
             {
@@ -165,16 +186,27 @@ namespace Day7
                         if (x.HandType == y.HandType) // same hand type, compare cards
                         {
                             int cardsIndex = 0;
+                            string xValidated = x.Cards.Contains(Enums.Cards.Joker) ? "|1" : "";
+                            string xString = x.Cards.Select(c => c.ToString()).Aggregate((a, b) => a + b);
+                            string yValidated = y.Cards.Contains(Enums.Cards.Joker) ? "|2" : "";
+                            string yString = y.Cards.Select(c => c.ToString()).Aggregate((a, b) => a + b);
+                            Console.WriteLine($"hand type: {x.HandType}{xValidated}{yValidated}, x: {xString}, y: {yString}");
                             foreach (Enums.Cards xCard in x.Cards)
                             {
-                                Enums.Cards yCard = y.Cards[cardsIndex];
+                                if (x.PartTwo && (xCard.Equals(Enums.Cards.Joker) || y.Cards[cardsIndex].Equals(Enums.Cards.Joker)))
+                                {
 
-                                if ((int)xCard > (int)yCard)
+                                }
+                                Enums.Cards xCardValidated = x.PartTwo ? (xCard.Equals(Enums.Cards.Joker) ? Enums.Cards.Jack : xCard) : xCard;
+                                Enums.Cards yCard = y.PartTwo ? (y.Cards[cardsIndex].Equals(Enums.Cards.Joker) ? Enums.Cards.Jack : y.Cards[cardsIndex]) : y.Cards[cardsIndex];
+                                Console.WriteLine($"\tx: {xCard}, valX: {xCardValidated}, y: {y.Cards[cardsIndex]}, valY: {yCard}");
+
+                                if ((int)xCardValidated > (int)yCard)
                                 {
                                     comparison = 1;
                                     break;
                                 }
-                                else if ((int)yCard > (int)xCard)
+                                else if ((int)yCard > (int)xCardValidated)
                                 {
                                     comparison = -1;
                                     break;
@@ -185,6 +217,7 @@ namespace Day7
                                     comparison = 0;
                                 }
                             }
+                            Console.WriteLine();
                         }
                         else // different hand type, compare hand types
                         {

@@ -24,38 +24,48 @@ namespace Day7
 
             if (fileContent != null)
             {
-                List<Hand> hands = [];
+                List<Hand> partOneHands = [];
+                List<Hand> partTwoHands = [];
                 foreach (var line in fileContent)
                 {
                     var lineElements = line.Split(" ");
                     if (int.TryParse(lineElements[1], out int bid))
                     {
-                        var handElements = lineElements[0].ToCharArray();
+                        char[] handElements = lineElements[0].ToCharArray();
 
-                        var cards = ConvertHandElementsToCards(handElements);
+                        List<Enums.Cards> partOneCards = ConvertHandElementsToCards(handElements);
+                        Hand partOneHand = new(partOneCards, bid);
+                        partOneHands.Add(partOneHand);
 
-                        var hand = new Hand(cards, bid);
-                        hands.Add(hand);
+                        List<Enums.Cards> partTwoCards = ConvertHandElementsToCards(handElements, true);
+                        Hand partTwoHand = new(partTwoCards, bid, true);
+                        partTwoHands.Add(partTwoHand);
                     }
                 }
 
                 HandComparer hc = new();
-                hands.Sort(hc);
-
-                int handIndex = 1;
-                int runningTotal = 0;
-                foreach (Hand sortedHand in hands)
-                {
-                    runningTotal += (sortedHand.Bid * handIndex++);
-                }
 
                 #region Part One
-                long partOne = runningTotal;
+                partOneHands.Sort(hc);
+                int partOneHandIndex = 1;
+                int partOneRunningTotal = 0;
+                foreach (Hand sortedHand in partOneHands)
+                {
+                    partOneRunningTotal += (sortedHand.Bid * partOneHandIndex++);
+                }
+                long partOne = partOneRunningTotal;
                 Console.WriteLine($"Day Seven\r\n\tPart One, partOne: {partOne}");
                 #endregion
 
                 #region Part Two
-                long partTwo = -1;
+                partTwoHands.Sort(hc);
+                int partTwoHandIndex = 1;
+                int partTwoRunningTotal = 0;
+                foreach (Hand sortedHand in partTwoHands)
+                {
+                    partTwoRunningTotal += (sortedHand.Bid * partTwoHandIndex++);
+                }
+                long partTwo = partTwoRunningTotal;
                 Console.WriteLine($"Day Seven\r\n\tPart Two, partTwo: {partTwo}");
                 #endregion
             }
